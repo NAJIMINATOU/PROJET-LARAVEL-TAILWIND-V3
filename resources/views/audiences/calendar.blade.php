@@ -12,7 +12,7 @@
             </a>
 
             <a href="{{ route('audiences.export.excel') }}"
-               class="bg-green-600 hover:bg-green-700 text-black font-semibold py-2 px-4 rounded-lg shadow transition">
+               class="bg-green-600 hover:bg-green-700  text-black font-semibold py-2 px-4 rounded-lg shadow transition">
                📊 Export Excel
             </a>
 
