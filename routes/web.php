@@ -12,58 +12,43 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
-
+// Dashboard principal selon rôle
 Route::get('/dashboard', function () {
     $user = auth()->user();
-
-    if ($user->role === 'admin') {
-        return view('dashboards.admin');
-    } elseif ($user->role === 'juge') {
-        return view('dashboards.juge');
-    } elseif ($user->role === 'greffier') {
-        return view('dashboards.greffier');
-    }
-
-    return view('dashboard'); // fallback si un autre rôle
+    if ($user->role === 'admin') return view('dashboards.admin');
+    if ($user->role === 'juge') return view('dashboards.juge');
+    if ($user->role === 'greffier') return view('dashboards.greffier');
+    return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
-// Dashboard Admin
-Route::get('/admin', function () {
-    return view('dashboards.admin');
-})->middleware(['auth'])->name('admin.dashboard');
-// web.php
-Route::middleware(['auth', 'role:admin'])->group(function () {
+
+// Dashboards spécifiques
+Route::get('/admin', function () { return view('dashboards.admin'); })->middleware('auth')->name('admin.dashboard');
+Route::get('/juge', function () { return view('dashboards.juge'); })->middleware('auth')->name('juge.dashboard');
+Route::get('/greffier', function () { return view('dashboards.greffier'); })->middleware('auth')->name('greffier.dashboard');
+
+// Gestion utilisateurs (admin uniquement)
+Route::middleware(['auth', \App\Http\Middleware\IsAdmin::class])->group(function () {
     Route::resource('users', UserController::class);
 });
 
-// Dashboard Juge
-Route::get('/juge', function () {
-    return view('dashboards.juge');
-})->middleware(['auth'])->name('juge.dashboard');
-
-// Dashboard Greffier
-Route::get('/greffier', function () {
-    return view('dashboards.greffier');
-})->middleware(['auth'])->name('greffier.dashboard');
-
+// Profil utilisateur
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-Route::middleware(['auth'])->group(function () {
-    Route::resource('dossiers', DossierController::class);
-    // ✅ Route du calendrier avant le resource
-    Route::get('/audiences/calendar', [AudienceController::class, 'calendar'])
-        ->name('audiences.calendar');
-        Route::get('/audiences/export/pdf', [AudienceController::class, 'exportPdf'])->name('audiences.export.pdf');
-Route::get('/audiences/export/excel', [AudienceController::class, 'exportExcel'])->name('audiences.export.excel');
 
+// Autres resources protégées
+Route::middleware('auth')->group(function () {
+    Route::resource('dossiers', DossierController::class);
+
+    Route::get('/audiences/calendar', [AudienceController::class, 'calendar'])->name('audiences.calendar');
+    Route::get('/audiences/export/pdf', [AudienceController::class, 'exportPdf'])->name('audiences.export.pdf');
+    Route::get('/audiences/export/excel', [AudienceController::class, 'exportExcel'])->name('audiences.export.excel');
     Route::resource('audiences', AudienceController::class);
     Route::resource('courriers', CourrierController::class);
-  
+
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
-
 
 require __DIR__.'/auth.php';

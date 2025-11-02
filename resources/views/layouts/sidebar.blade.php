@@ -54,12 +54,16 @@
             <span x-show="open" >    gestion des courriers</span>
         </a>
 
-        
+      @auth
+    @if(auth()->user()->role === 'admin')
       <a href="{{ route('users.index') }}" 
            class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-indigo-100 hover:text-indigo-700 transition-colors"
            :class="{ 'justify-center': !open }">
             <i class="fa-solid fa-gavel text-lg"></i>
             <span x-show="open">    gestion des utilisateurs</span>
         </a>
+    @endif
+@endauth
+
     </nav>
 </div>
