@@ -45,6 +45,10 @@ public function create()
     if ($request->hasFile('fichier')) {
         $validated['fichier'] = $request->file('fichier')->store('courriers', 'public');
     }
+        $user = auth()->user();
+
+ // Ajout explicite du greffier connecté
+    $validated['greffier_id'] = $user->id;
 
     Courrier::create($validated);
 

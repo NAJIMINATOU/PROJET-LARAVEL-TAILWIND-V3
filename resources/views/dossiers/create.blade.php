@@ -14,7 +14,7 @@
 
 
 
-    <h2 class="text-2xl font-bold mb-6 text-gray-700">➕ Nouveau dossier judiciaire</h2>
+    <h2 class="text-2xl font-bold mb-6 text-gray-700">  <i class="fas fa-plus" style="font-size: 20px;"></i> Nouveau dossier judiciaire</h2>
 
     <form action="{{ route('dossiers.store') }}" method="POST" class="space-y-4">
         @csrf
@@ -22,7 +22,7 @@
         <div>
             <label class="block text-sm font-medium text-gray-700">Numéro de dossier</label>
             <input type="text" name="numero_dossier" value="{{ old('numero_dossier') }}" 
-                   class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+                   class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 " required>
             @error('numero_dossier')
                 <p class="text-red-500 text-sm">{{ $message }}</p>
             @enderror
@@ -58,7 +58,8 @@
         <div class="text-right">
             <button type="submit"
                     class="px-5 py-2 bg-indigo-600 text-black font-semibold rounded-md hover:bg-indigo-700 transition">
-                💾 Enregistrer
+                <i class="far fa-save"></i>
+ Enregistrer
             </button>
         </div>
     </form>

@@ -17,6 +17,8 @@ class Courrier extends Model
         'expediteur',
         'destinataire',
         'dossier_id',
+         'greffier_id', // <= IMPORTANT
+
         'status', // en cours, traité, archivé
         'fichier', // chemin du fichier uploadé
     ];
@@ -32,4 +34,10 @@ class Courrier extends Model
     {
         return $this->belongsTo(User::class);
     }
+    // App\Models\Courrier.php
+public function greffier()
+{
+    return $this->belongsTo(User::class, 'greffier_id');
+}
+
 }

@@ -64,7 +64,10 @@ public function exportExcel()
             'dossier_id' => 'required|exists:dossiers,id',
             'user_id' => 'required|exists:users,id',
         ]);
+            $user = auth()->user();
 
+ // Ajoute automatiquement le greffier connecté
+    $validated['greffier_id'] = $user->id;
         Audience::create($validated);
 
         return redirect()->route('audiences.index')->with('success', '✅ Audience ajoutée avec succès.');

@@ -4,16 +4,17 @@
 <div class="container mx-auto px-6 py-8">
     <!-- Titre et boutons export -->
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">🗓️ Calendrier des Audiences</h1>
+        <h1 class="text-3xl font-bold text-gray-800">           <i class="far fa-calendar"></i>
+ Calendrier des Audiences</h1>
         <div class="flex gap-2">
             <a href="{{ route('audiences.export.pdf') }}"
                class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition">
-               📄 Export PDF
+               <i class="fas fa-file-pdf"></i> Export PDF
             </a>
 
             <a href="{{ route('audiences.export.excel') }}"
                class="bg-green-600 hover:bg-green-700  text-black font-semibold py-2 px-4 rounded-lg shadow transition">
-               📊 Export Excel
+                <i class="fas fa-file-excel"></i> Export Excel
             </a>
 
             <a href="{{ route('audiences.index') }}"

@@ -3,7 +3,8 @@
 @section('content')
 <div class="container bg-white mx-auto px-6 py-8">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-800">👥 Liste des utilisateurs</h1>
+        <h1 class="text-2xl font-bold text-gray-800"><i class="fas fa-users"></i>
+ Liste des utilisateurs</h1>
         <a href="{{ route('users.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">+ Ajouter</a>
     </div>
 
@@ -34,11 +35,12 @@
                                title="Modifier">
                                 <i class="fas fa-edit text-lg"></i>
                             </a> 
-                            
+
                     <form action="{{ route('users.destroy', $user) }}" method="POST" onsubmit="return confirm('Supprimer cet utilisateur ?')">
                         @csrf
                         @method('DELETE')
-                        <button class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Supprimer</button>
+                        <button class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">                                <i class="fas fa-trash-alt"></i>
+</button>
                     </form>
                 </td>
             </tr>

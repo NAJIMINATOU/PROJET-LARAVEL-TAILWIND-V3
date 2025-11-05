@@ -21,16 +21,29 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+public function dossiers()
+{
+    return $this->hasMany(Dossier::class, 'juge_id');
+}
+    // 🔹 Un juge peut avoir plusieurs dossiers
+  public function dossiersEnCours()
+{
+    return $this->hasMany(Dossier::class, 'juge_id')->where('statut', 'en cours');
+}
 
-    // 🔹 Un utilisateur peut créer plusieurs dossiers
-    public function dossiers()
-    {
-        return $this->hasMany(Dossier::class);
-    }
+public function dossiersClos()
+{
+    return $this->hasMany(Dossier::class, 'juge_id')->where('statut', 'clos');
+}
 
-    // 🔹 Un utilisateur (juge) peut diriger plusieurs audiences
+public function dossiersEnAppel()
+{
+    return $this->hasMany(Dossier::class, 'juge_id')->where('statut', 'en appel');
+}
+
+    // 🔹 Un juge peut diriger plusieurs audiences
     public function audiences()
     {
-        return $this->hasMany(Audience::class);
+        return $this->hasMany(Audience::class, 'juge_id');
     }
 }

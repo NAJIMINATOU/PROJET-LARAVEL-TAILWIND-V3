@@ -17,7 +17,8 @@ return new class extends Migration
     $table->string('salle');
     $table->foreignId('dossier_id')->constrained('dossiers')->onDelete('cascade');
     $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // juge
-    $table->timestamps();
+      $table->unsignedBigInteger('juge_id')->nullable()->after('id'); // nullable si pas obligatoire
+        $table->foreign('juge_id')->references('id')->on('users')->onDelete('set null'); $table->timestamps();
 });
 
 
@@ -29,5 +30,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('audiences');
+                $table->dropForeign(['juge_id']);
+        $table->dropColumn('juge_id');
     }
 };

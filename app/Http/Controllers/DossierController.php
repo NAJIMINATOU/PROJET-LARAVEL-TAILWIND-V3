@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dossier;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class DossierController extends Controller
@@ -10,32 +11,35 @@ class DossierController extends Controller
     /**
      * Liste des dossiers avec recherche.
      */
-  public function index(Request $request)
-{
-    $query = Dossier::query();
+    public function index(Request $request)
+    {
+        $query = Dossier::query();
 
-    if ($request->filled('numero_dossier')) {
-        $query->where('numero_dossier', 'like', "%{$request->numero_dossier}%");
+        // 🔍 Recherche
+        if ($request->filled('numero_dossier')) {
+            $query->where('numero_dossier', 'like', "%{$request->numero_dossier}%");
+        }
+        if ($request->filled('type_affaire')) {
+            $query->where('type_affaire', 'like', "%{$request->type_affaire}%");
+        }
+        if ($request->filled('date_depot')) {
+            $query->whereDate('date_depot', $request->date_depot);
+        }
+
+        $dossiers = $query->orderBy('date_depot', 'desc')->paginate(10);
+
+        return view('dossiers.index', compact('dossiers'));
     }
-    if ($request->filled('type_affaire')) {
-        $query->where('type_affaire', 'like', "%{$request->type_affaire}%");
-    }
-    if ($request->filled('date_depot')) {
-        $query->whereDate('date_depot', $request->date_depot);
-    }
-
-    $dossiers = $query->orderBy('date_depot', 'desc')->paginate(10);
-
-    return view('dossiers.index', compact('dossiers'));
-}
-
 
     /**
      * Afficher le formulaire de création.
      */
     public function create()
     {
-        return view('dossiers.create');
+        // 🧑‍⚖️ Récupérer la liste des juges disponibles
+        $juges = User::where('role', 'juge')->get();
+
+        return view('dossiers.create', compact('juges'));
     }
 
     /**
@@ -49,9 +53,18 @@ class DossierController extends Controller
             'date_depot' => 'required|date',
             'statut' => 'required|in:en cours,clos,en appel',
             'description' => 'nullable|string',
+            'juge_id' => 'nullable|exists:users,id',
         ]);
 
-        $validated['user_id'] = auth()->id();
+        $user = auth()->user();
+
+        // 🧠 Associer automatiquement le créateur du dossier
+        $validated['user_id'] = $user->id;
+
+        // 🧾 Si c’est un greffier, on stocke aussi son ID
+        if ($user->role === 'greffier') {
+            $validated['greffier_id'] = $user->id;
+        }
 
         Dossier::create($validated);
 
@@ -72,7 +85,9 @@ class DossierController extends Controller
      */
     public function edit(Dossier $dossier)
     {
-        return view('dossiers.edit', compact('dossier'));
+        $juges = User::where('role', 'juge')->get();
+
+        return view('dossiers.edit', compact('dossier', 'juges'));
     }
 
     /**
@@ -86,6 +101,7 @@ class DossierController extends Controller
             'date_depot' => 'required|date',
             'statut' => 'required|in:en cours,clos,en appel',
             'description' => 'nullable|string',
+            'juge_id' => 'nullable|exists:users,id',
         ]);
 
         $dossier->update($validated);

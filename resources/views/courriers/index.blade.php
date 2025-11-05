@@ -4,7 +4,8 @@
 <div class="bg-white shadow rounded-lg p-6">
 
     <div class="flex justify-between items-center mb-4">
-        <h2 class="text-2xl font-bold text-gray-700">📬 Gestion des Courriers</h2>
+        <h2 class="text-2xl font-bold text-gray-700"><i class="fas fa-envelope"></i>
+ Gestion des Courriers</h2>
 
         <a href="{{ route('courriers.create') }}"
            class="bg-blue-600 text-black px-4 py-2 rounded hover:bg-blue-700 transition">

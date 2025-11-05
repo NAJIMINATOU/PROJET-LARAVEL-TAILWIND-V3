@@ -12,43 +12,31 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Dashboard principal selon rôle
-Route::get('/dashboard', function () {
-    $user = auth()->user();
-    if ($user->role === 'admin') return view('dashboards.admin');
-    if ($user->role === 'juge') return view('dashboards.juge');
-    if ($user->role === 'greffier') return view('dashboards.greffier');
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
-
-// Dashboards spécifiques
-Route::get('/admin', function () { return view('dashboards.admin'); })->middleware('auth')->name('admin.dashboard');
-Route::get('/juge', function () { return view('dashboards.juge'); })->middleware('auth')->name('juge.dashboard');
-Route::get('/greffier', function () { return view('dashboards.greffier'); })->middleware('auth')->name('greffier.dashboard');
-
-// Gestion utilisateurs (admin uniquement)
-Route::middleware(['auth', \App\Http\Middleware\IsAdmin::class])->group(function () {
-    Route::resource('users', UserController::class);
-});
-
-// Profil utilisateur
+// 📌 Tableau de bord principal selon rôle
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Profil utilisateur
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
-// Autres resources protégées
-Route::middleware('auth')->group(function () {
+    // Gestion utilisateurs (admin uniquement)
+    Route::middleware(\App\Http\Middleware\IsAdmin::class)->group(function () {
+        Route::resource('users', UserController::class);
+        Route::get('/dashboard/export/pdf', [DashboardController::class,'exportPdf'])->name('dashboard.export.pdf');
+        Route::get('/dashboard/export/excel', [DashboardController::class,'exportExcel'])->name('dashboard.export.excel');
+    });
+
+    // Autres resources protégées
     Route::resource('dossiers', DossierController::class);
 
     Route::get('/audiences/calendar', [AudienceController::class, 'calendar'])->name('audiences.calendar');
     Route::get('/audiences/export/pdf', [AudienceController::class, 'exportPdf'])->name('audiences.export.pdf');
     Route::get('/audiences/export/excel', [AudienceController::class, 'exportExcel'])->name('audiences.export.excel');
     Route::resource('audiences', AudienceController::class);
-    Route::resource('courriers', CourrierController::class);
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('courriers', CourrierController::class);
 });
 
 require __DIR__.'/auth.php';

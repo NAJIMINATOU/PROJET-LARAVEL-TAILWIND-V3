@@ -2,7 +2,8 @@
 
 @section('content')
 <div class="bg-white shadow rounded-lg p-6">
-    <h2 class="text-2xl font-bold text-gray-700 mb-6">📁 Gestion des dossiers</h2>
+    <h2 class="text-2xl font-bold text-gray-700 mb-6"><i class="fas fa-folder" style="font-size: 1.5rem; color: #2a2928;"></i>
+ Gestion des dossiers</h2>
 
     {{-- ✅ Message de succès --}}
     @if(session('success'))
@@ -13,7 +14,7 @@
 
     {{-- 🔍 Barre de recherche --}}
     <form method="GET" action="{{ route('dossiers.index') }}" class="flex flex-wrap items-center gap-3 mb-6">
-        <input type="text" name="numero_dossier" placeholder="🔎 Numéro de dossier"
+        <input type="text" name="numero_dossier" placeholder=" Numéro de dossier"
                value="{{ request('numero_dossier') }}"
                class="border border-gray-300 rounded-md px-3 py-2 w-60 focus:ring-indigo-500 focus:border-indigo-500">
 
@@ -27,20 +28,25 @@
 
         <button type="submit"
                 class="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 transition">
-            🔍 Rechercher
+            <i class="fas fa-search" style="font-size: 1rem;"></i>
+ Rechercher
         </button>
 
         <a href="{{ route('dossiers.index') }}"
            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">
-            ♻️ Réinitialiser
+            <i class="fas fa-recycle" style="font-size: 1.5rem;"></i>
+ Réinitialiser
         </a>
-
+@auth
+    @if(in_array(auth()->user()->role, ['admin', 'greffier']))
         <div class="ml-auto">
             <a href="{{ route('dossiers.create') }}"
                class="px-4 py-2 bg-green-600 text-black rounded-md hover:bg-green-700 transition">
-               ➕ Nouveau dossier
+              <i class="fas fa-plus" style="font-size: 20px;"></i>  Nouveau dossier
             </a>
         </div>
+          @endif
+@endauth
     </form>
 
     {{-- 🧾 Tableau des dossiers --}}
@@ -71,10 +77,14 @@
                                     {{ ucfirst($dossier->statut) }}
                                 </span>
                             </td>
+
                             <td class="py-2 px-4 text-center">
+                                 <!-- Afficher "Éditer" et "Supprimer" uniquement pour admin et greffier -->
+            @if(in_array(auth()->user()->role, ['admin', 'greffier']))
                                 <a href="{{ route('dossiers.edit', $dossier) }}"
                                    class="px-3 py-1 bg-blue-600 text-black text-sm rounded hover:bg-blue-700 transition">
-                                    ✏️ Éditer
+                                                                                            <i class="fas fa-edit"></i>
+
                                 </a>
                                 <form action="{{ route('dossiers.destroy', $dossier) }}" method="POST" class="inline">
                                     @csrf
@@ -82,9 +92,10 @@
                                     <button type="submit"
                                             onclick="return confirm('Voulez-vous vraiment supprimer ce dossier ?')"
                                             class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition">
-                                        🗑️ Supprimer
+                                                                        <i class="fas fa-trash-alt"></i>
+ 
                                     </button>
-                                </form>
+                                </form> @endif
                             </td>
                         </tr>
                     @endforeach

@@ -9,12 +9,21 @@ class Audience extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'date_audience',
+    protected $casts= [
+    'date_audience' => 'datetime',
         'salle',
         'dossier_id',
         'user_id',
     ];
+    protected $fillable = [
+    'date_audience',
+    'salle',
+    'dossier_id',
+    'user_id',
+    'juge_id', // si tu as ce champ aussi
+            'greffier_id', // <= IMPORTANT
+
+];
 
     // 🔹 Relation : une audience appartient à un dossier
     public function dossier()
@@ -26,5 +35,11 @@ class Audience extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    
+    
+     public function juge()
+    {
+        return $this->belongsTo(User::class, 'juge_id');
     }
 }

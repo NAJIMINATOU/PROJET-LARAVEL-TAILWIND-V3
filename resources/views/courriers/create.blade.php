@@ -3,7 +3,8 @@
 @section('content')
 <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
     <h2 class="text-2xl font-semibold text-gray-700 mb-6">
-        ✉️ Nouveau Courrier
+        <i class="fas fa-envelope"></i>
+ Nouveau Courrier
     </h2>
 
     <form action="{{ route('courriers.store') }}" method="POST" enctype="multipart/form-data">
@@ -77,7 +78,8 @@
             </a>
 
             <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
-                ✅ Enregistrer
+                <i class="fas fa-check-circle"></i>
+ Enregistrer
             </button>
         </div>
     </form>
